@@ -4,6 +4,7 @@ import seaborn as sns
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+import joblib as save_module
 
 
 def load_data():
@@ -30,6 +31,12 @@ def train_model(features, labels, kernel, C):
     svm_classifier = SVC(kernel=kernel, C=C)
     svm_classifier.fit(features, labels)
     return svm_classifier
+
+
+def save_model(svm_classifier, output_file_path):
+    print("Guardando el modelo...")
+    save_module.dump(svm_classifier, output_file_path)
+    print("Modelo guardado exitosamente en", output_file_path)
 
 
 def plot_original_dataset(iris, X, y):
@@ -86,6 +93,9 @@ def main():
     # que se ajusta más a los datos
 
     svm_classifier = train_model(features_train, labels_train, 'linear', 1.0)
+
+    # Guardar el modelo entrenado en un archivo
+    save_model(svm_classifier, "svm_classifier.pkl")
 
     # Visualizar el hiperplano de separación
     plot_decision_boundary(iris_data, features_train, labels_train, svm_classifier)
