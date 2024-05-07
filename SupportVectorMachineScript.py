@@ -5,6 +5,8 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 import joblib as save_module
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
 
 
 def load_data():
@@ -73,6 +75,31 @@ def plot_decision_boundary(iris, X, y, classifier):
     plt.show()
 
 
+def evaluate_model(features, labels, classifier, target_names):
+    print("\n\nEvaluando el modelo SVM...")
+
+    # Realizar predicciones en el conjunto de prueba
+    predictions = classifier.predict(features)
+
+    # Calcular métricas de evaluación
+    accuracy = accuracy_score(labels, predictions)
+    report = classification_report(labels, predictions, target_names=target_names)
+    cm = confusion_matrix(labels, predictions)
+
+    print("Precisión del modelo:", accuracy)
+    print("Reporte de clasificación:\n", report)
+    print("Matriz de confusión:")
+    print(cm)
+
+    # Visualizar la matriz de confusión
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, cmap='Blues', fmt='g', xticklabels=target_names, yticklabels=target_names)
+    plt.title("Matriz de Confusión")
+    plt.xlabel("Etiquetas Predichas")
+    plt.ylabel("Etiquetas Verdaderas")
+    plt.show()
+
+
 def main():
     # Cargar el conjunto de datos Iris
     iris_data, features, labels = load_data()
@@ -85,13 +112,6 @@ def main():
     plot_original_dataset(iris_data, features_train, labels_train)
 
     # Entrenar el modelo SVM
-    # 1.0 es el valor por defecto de C que es el parámetro de regularización que nos ayuda a controlar el sobreajuste
-    # C es el margen de tolerancia que se le da a los datos de entrenamiento
-    # Un valor de C pequeño significa un margen grande y un valor de C grande significa un margen pequeño
-    # Un margen grande significa que se permite un mayor número de errores de entrenamiento
-    # Un margen pequeño significa que se permite un menor número de errores de entrenamiento es decir
-    # que se ajusta más a los datos
-
     svm_classifier = train_model(features_train, labels_train, 'linear', 1.0)
 
     # Guardar el modelo entrenado en un archivo
@@ -99,6 +119,10 @@ def main():
 
     # Visualizar el hiperplano de separación
     plot_decision_boundary(iris_data, features_train, labels_train, svm_classifier)
+
+    # Evaluar el modelo SVM
+    target_names = iris_data.target_names.tolist()
+    evaluate_model(features_test, labels_test, svm_classifier, target_names)
 
 
 if __name__ == "__main__":
