@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
@@ -112,7 +111,7 @@ def main():
     plot_original_dataset(iris_data, features_train, labels_train)
 
     # Entrenar el modelo SVM
-    svm_classifier = train_model(features_train, labels_train, 'linear', 1.0)
+    svm_classifier = train_model(features_train, labels_train, 'poly', 1.0)
 
     # Guardar el modelo entrenado en un archivo
     save_model(svm_classifier, "svm_classifier.pkl")
